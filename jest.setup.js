@@ -1,0 +1,1 @@
+process.env.CLASS_NAME = 'DynamicCalculator';

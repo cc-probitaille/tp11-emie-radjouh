@@ -53,6 +53,7 @@ M
 */
 
 import { StringCalculator } from "../stringCalculator";
+import { createClassFromEnv } from "../stringCalculator";
 
 describe("String calculator", () => {
   let stringCalc: StringCalculator;
@@ -92,9 +93,52 @@ describe("String calculator", () => {
     expect(result).toBe(3);
     
   })
-  
-  
-  
-
-  
 });
+
+describe("Dynamic Class Creation", () => {
+  beforeEach(() => {
+    process.env.CLASS_NAME = "DynamicCalculator"; 
+  });
+
+  afterEach(() => {
+    delete process.env.CLASS_NAME; 
+    jest.resetModules(); 
+  });
+
+  it("should create a class dynamically with a valid name", () => {
+    const DynamicClass = createClassFromEnv();
+    const instance = new DynamicClass();
+    const result = instance.add("1,2,3");
+    expect(result).toBe(6);
+  });
+
+  it("should throw an error if no class name is provided in the environment", () => {
+    delete process.env.CLASS_NAME;
+    expect(() => createClassFromEnv()).toThrowError(
+      "Aucun nom de classe fourni dans la variable d'environement."
+    );
+  });
+
+  it("should add numbers correctly in the dynamically created class", () => {
+    const DynamicClass = createClassFromEnv();
+    const instance = new DynamicClass();
+    const result = instance.add("4,5,6");
+    expect(result).toBe(15);
+  });
+
+  it("should return 0 for an empty string in the dynamically created class", () => {
+    const DynamicClass = createClassFromEnv();
+    const instance = new DynamicClass();
+    const result = instance.add("");
+    expect(result).toBe(0);
+  });
+
+  it("should throw an error if the class name is invalid in the environment", () => {
+    process.env.CLASS_NAME = ""; 
+    expect(() => createClassFromEnv()).toThrowError(
+      "Aucun nom de classe fourni dans la variable d'environement."
+    );
+  });
+});
+
+

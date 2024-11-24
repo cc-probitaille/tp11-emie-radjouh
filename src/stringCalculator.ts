@@ -56,3 +56,24 @@ export class StringCalculator {
     return input[2];
   }
 }
+
+export function createClassFromEnv() {
+  const className = process.env.CLASS_NAME;
+  if (!className) {
+    throw new Error("Aucun nom de classe fourni dans la variable d'environement.");
+  }
+
+  const dynamicClass = class {
+    add(numbers: string): number {
+      const numArray = numbers.split(",").map(Number);
+      return numArray.reduce((sum, num) => sum + num, 0);
+    }
+  };
+  return dynamicClass;
+}
+
+
+const DynamicClass = createClassFromEnv();
+const instance = new DynamicClass();
+
+console.log(instance.add("1,2,3"));
